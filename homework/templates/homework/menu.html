@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'menu.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Specializations and Subjects</h1>
+    </header>
+
+    <div class="content">
+        <!-- Список специализаций -->
+        <div class="specializations">
+            <h2>Choose Specialization:</h2>
+            <ul>
+                {% for specialization in specializations %}
+                    <li>
+                        <button class="specialization-btn" onclick="showTasks({{ specialization.id }})">
+                            {{ specialization.name }}
+                        </button>
+                        <!-- Список предметов для выбранной специализации -->
+                        <ul id="tasks-{{ specialization.id }}" class="tasks-list" style="display:none;">
+                            {% for subject in specialization.subject_set.all %}
+                                <li>
+                                    <button class="subject-btn" onclick="showHomework({{ subject.id }})">
+                                        {{ subject.name }}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Список домашних заданий -->
+        <div id="homework-list" class="homework-list">
+            <h2>Homework for Selected Subject:</h2>
+            <ul id="homework-list-items">
+                <!-- Динамически заполняется -->
+            </ul>
+        </div>
+
+        <!-- Кнопка для записи голоса -->
+        <div class="record-voice">
+            <a href="{% url 'record_homework' %}">
+                <button>Record Homework (Voice)</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Функция для отображения задач для выбранной специализации
+        function showTasks(specializationId) {
+            console.log('Specialization ID:', specializationId);  // Проверим, что ID специализации передается
+
+            const tasksList = document.getElementById('tasks-' + specializationId);
+            if (tasksList) {
+                tasksList.style.display = (tasksList.style.display === "none") ? "block" : "none";  // Показываем/скрываем список задач
+            }
+        }
+
+       // Функция для отображения домашних заданий для выбранного предмета
+function showHomework(subjectId) {
+    fetch(`/homework_for_subject/${subjectId}/`)  // Путь, который мы добавили в Django
+        .then(response => response.json())
+        .then(data => {
+            const homeworkList = document.getElementById('homework-list-items');
+            homeworkList.innerHTML = '';  // Очистим старые задания
+
+            // Заполняем список домашки
+            data.homeworks.forEach(homework => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>${homework.subject_name}:</strong>
+                    <p>${homework.task}</p>
+                    ${homework.audio ? `<audio controls><source src="${homework.audio}" type="audio/wav"></audio>` : ''}
+                `;
+                homeworkList.appendChild(li);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Не удалось загрузить домашки');
+        });
+}
+
+
+        // Функция для удаления домашнего задания
+        function deleteHomework(homeworkId) {
+            fetch(`/delete_homework/${homeworkId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Homework deleted successfully!');
+                // Перезагружаем список домашних заданий
+                showHomework(data.subject_id);
+            })
+            .catch(error => console.error('Error deleting homework:', error));
+        }
+    </script>
+</body>
+</html>

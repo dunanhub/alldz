@@ -1,0 +1,151 @@
+/* Основные стили страницы */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+/* Стили для контейнера с контентом */
+.content {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Стили для списка специализаций */
+.specializations h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.specializations ul {
+    list-style: none;
+    padding: 0;
+}
+
+.specializations li {
+    margin-bottom: 10px;
+}
+
+.specialization-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s;
+}
+
+.specialization-btn:hover {
+    background-color: #45a049;
+}
+
+/* Стили для списка предметов */
+.tasks-list {
+    margin-top: 10px;
+    padding-left: 20px;
+    display: none;
+}
+
+.subject-btn {
+    background-color: #009688;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.subject-btn:hover {
+    background-color: #00796b;
+}
+
+/* Стили для отображения домашних заданий */
+.homework-list {
+    margin-top: 30px;
+}
+
+#homework-list-items {
+    list-style: none;
+    padding: 0;
+}
+
+#homework-list-items li {
+    margin-bottom: 15px;
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    background-color: #2196F3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #1976D2;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Стили для кнопки записи голоса */
+.record-voice {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.record-voice button {
+    font-size: 1.2em;
+}
+
+/* Стили для мобильных устройств */
+@media (max-width: 768px) {
+    .content {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .specialization-btn,
+    .subject-btn {
+        width: 100%;
+        padding: 12px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+    }
+}

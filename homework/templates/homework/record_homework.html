@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Homework</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styl.css' %}">
+</head>
+<body>
+    <h1>Запись домашнего задания</h1>
+
+    <!-- Форма для записи домашки -->
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Выбор специализации -->
+        <label for="specialization">Специализация:</label>
+        <select name="specialization" required>
+            {% for specialization in specializations %}
+                <option value="{{ specialization.id }}">{{ specialization.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <!-- Выбор предмета -->
+        <label for="subject">Предмет:</label>
+        <select name="subject" required>
+            {% for subject in subjects %}
+                <option value="{{ subject.id }}">{{ subject.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <!-- Описание домашки -->
+        <label for="task">Описание задания:</label>
+        <textarea name="task" id="task" required></textarea><br>
+
+        <!-- Кнопка для отправки домашки -->
+        <button type="submit">Отправить домашку</button>
+    </form>
+
+    <!-- Кнопки для записи аудио -->
+    <div id="record-voice">
+        <button id="start-recording" onclick="startRecording()">Начать запись</button>
+        <button id="stop-recording" onclick="stopRecording()" disabled>Остановить запись</button>
+    </div>
+
+    <!-- Кнопка для перехода в меню -->
+    <div id="go-to-menu">
+        <a href="{% url 'menu' %}">
+            <button>Перейти в меню</button>
+        </a>
+    </div>
+
+    <script>
+        let recognition;
+
+        // Функция для начала записи
+        function startRecording() {
+            // Проверяем доступность Web Speech API
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('Speech recognition not supported in this browser.');
+                return;
+            }
+
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = 'ru-RU';  // Устанавливаем русский язык для распознавания
+            recognition.interimResults = false;  // Получаем только окончательные результаты
+            recognition.maxAlternatives = 1;  // Максимальное количество альтернативных вариантов
+
+            // Когда распознавание завершено
+            recognition.onresult = function(event) {
+                const speechToText = event.results[0][0].transcript;
+                document.getElementById('task').value = speechToText;  // Вставляем распознанный текст в поле task
+            };
+
+            // Когда распознавание завершено или прервано
+            recognition.onerror = function(event) {
+                console.error('Ошибка распознавания речи:', event.error);
+            };
+
+            recognition.start();
+            document.getElementById('stop-recording').disabled = false;
+            document.getElementById('start-recording').disabled = true;
+        }
+
+        // Функция для остановки записи
+        function stopRecording() {
+            recognition.stop();  // Останавливаем распознавание
+            document.getElementById('start-recording').disabled = false;
+            document.getElementById('stop-recording').disabled = true;
+        }
+    </script>
+</body>
+</html>
